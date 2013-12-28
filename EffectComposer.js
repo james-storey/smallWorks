@@ -14,21 +14,21 @@ var EffectComposer = function (renderer, renderTarget) {
 		renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
 	}
 	
-	this.renderTarget1 = renderTarget;
-	this.renderTarget2 = renderTarget.clone();
+	var renderTarget1 = renderTarget;
+	var renderTarget2 = renderTarget.clone();
 
-	this.writeBuffer = this.renderTarget1;
-	this.readBuffer = this.renderTarget2;
+	var writeBuffer = renderTarget1;
+	var readBuffer = renderTarget2;
 
 	this.passes = [];
 
-	this.camera = new THREE.Camera();
-	this.camera.position.z = 1;
+	var camera = new THREE.Camera();
+	camera.position.z = 1;
 
-	this.scene = new THREE.Scene();
+	var scene = new THREE.Scene();
 
 	
-	this.mesh = new THREE.Mesh(new THREE.PlanarGeometry(2,2));
+	var mesh = new THREE.Mesh(new THREE.PlanarGeometry(2,2));
 	scene.add(this.mesh);
 
 	var passVertex = """
@@ -76,7 +76,7 @@ var EffectComposer = function (renderer, renderTarget) {
 		renderer.render(this.scene, this.camera);
 	}
 
-	this.renderPass(passNum) {
+	this.renderPass = function(passNum) {
 		var currentPass = passes[passNum];
 		currentPass.uniforms.texture = this.readBuffer;
 
@@ -84,5 +84,16 @@ var EffectComposer = function (renderer, renderTarget) {
 		renderer.render(this.scene, this.camera, this.writeBuffer);
 
 		swapBuffers();
+	}
+
+	this.render = function() {
+		for(var i = 0; i < passes.length; i += 1) {
+			renderPass(i);
+		}
+		renderToScreen();
+	}
+
+	this.renderTarget = function() {
+		return writeBuffer;
 	}
 }
