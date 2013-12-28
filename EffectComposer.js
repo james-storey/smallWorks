@@ -13,7 +13,7 @@ var EffectComposer = function (renderer, renderTarget) {
 		};
 		renderTarget = new THREE.WebGLRenderTarget(width, height, parameters);
 	}
-
+	
 	this.renderTarget1 = renderTarget;
 	this.renderTarget2 = renderTarget.clone();
 
@@ -21,6 +21,15 @@ var EffectComposer = function (renderer, renderTarget) {
 	this.readBuffer = this.renderTarget2;
 
 	this.passes = [];
+
+	this.camera = new THREE.Camera();
+	this.camera.position.z = 1;
+
+	this.scene = new THREE.Scene();
+
+	
+	this.mesh = new THREE.Mesh(new THREE.PlanarGeometry(2,2));
+	scene.add(this.mesh);
 
 	var passVertex = """
 
@@ -39,6 +48,12 @@ var EffectComposer = function (renderer, renderTarget) {
 	}
 	""";
 
+	var swapBuffers = function(){
+		var tmp = readBuffer;
+		readBuffer = writeBuffer;
+		writeBuffer = tmp;
+	}
+
 	var passThruUniforms = {
 		resolution: {type: "v2", value: res },
 		texture: { type: "t", value: null }
@@ -50,7 +65,24 @@ var EffectComposer = function (renderer, renderTarget) {
 		fragmentShader: blitShader
 	});
 
-	this.renderToScreen = function () {
-		
+	this.renderToScreen = function (inTexture) {
+		if(inTexture === undefined) {
+			passThruUniforms.texture = readBuffer;	
+		}
+		else {
+			passThruUniforms.texture = inTexture;
+		}
+		this.mesh.material = passThruShader;
+		renderer.render(this.scene, this.camera);
+	}
+
+	this.renderPass(passNum) {
+		var currentPass = passes[passNum];
+		currentPass.uniforms.texture = this.readBuffer;
+
+		this.mesh.material = currentPass;
+		renderer.render(this.scene, this.camera, this.writeBuffer);
+
+		swapBuffers();
 	}
 }
