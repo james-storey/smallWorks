@@ -4,6 +4,7 @@ var Program = function() {
 	var meshObject;
 	var uFaces;
 	var fxComp;
+	var renderTarget;
 
 	var that = { };
 
@@ -33,6 +34,7 @@ var Program = function() {
 		this.initGeo();
 
 		fxComp = new EffectComposer(renderer);
+		renderTarget = fxComp.getRenderTarget();
 
 	};
 
@@ -45,7 +47,8 @@ var Program = function() {
 		var pFace = uFaces.faceByIndex(Math.floor(Math.random() * meshObject.geometry.faces.length));
 		uFaces.translateFace(pFace, pFace.normal);
 
-		renderer.render(scene, camera);
+		renderer.render(scene, camera, renderTarget);
+		fxComp.render();
 	};
 
 	that.onResize = function(event) {

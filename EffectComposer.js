@@ -80,10 +80,10 @@ var EffectComposer = function (r, rt) {
 		// render the result to the screen
 		// serves as final output
 		if(inTexture === undefined) {
-			passThruUniforms.texture = readBuffer;	
+			passThruUniforms.texture.value = readBuffer;	
 		}
 		else {
-			passThruUniforms.texture = inTexture;
+			passThruUniforms.texture.value = inTexture;
 		}
 		mesh.material = passThruShader;
 		renderer.render(scene, camera);
@@ -93,11 +93,11 @@ var EffectComposer = function (r, rt) {
 		// render a single pass as found in the passes array
 		var currentPass = passes[passNum];
 		if(currentPass.uniforms.texture !== undefined) {
-			currentPass.uniforms.texture = readBuffer;
+			currentPass.uniforms.texture.value = readBuffer;
 		}
 		else if(currentPass.uniforms.tDiffuse !== undefined) {
 			// compatibility with alteredq style shader names
-			currentPass.uniforms.tDiffuse = readBuffer;
+			currentPass.uniforms.tDiffuse.value = readBuffer;
 		}
 
 		mesh.material = currentPass;
@@ -109,7 +109,7 @@ var EffectComposer = function (r, rt) {
 	var renderPassThru = function(input, output) {
 		// renders a texture to another target;
 		mesh.material = passThruShader;
-		passThruShader.uniforms.texture = input;
+		passThruShader.uniforms.texture.value = input;
 		renderer.render(scene, camera, output);
 		swapBuffers();
 	}
@@ -134,8 +134,8 @@ var EffectComposer = function (r, rt) {
 		if(combineIndex > 0) {
 			var cShader = passes[combineIndex];
 			try {
-				cShader.uniforms.texture1 = rawRenders[0];
-				cShader.uniforms.texture2 = rawRenders[1];
+				cShader.uniforms.texture1.value = rawRenders[0];
+				cShader.uniforms.texture2.value = rawRenders[1];
 			}
 			catch (e) {
 				console.error("combine shader needs texture targets 'texture1' and 'texture2'");
