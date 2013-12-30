@@ -5,8 +5,46 @@ var Program = function() {
 	var uFaces;
 	var fxComp;
 	var renderTarget;
+	var time = new THREE.Clock();
 
 	var that = { };
+
+	var colorShader = function () {
+		var uniforms = {
+			texture: { type: "t", value: null },
+			time: { type: "f", value: 0.0 }
+		};
+		var vs = [
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = uv;",
+				"gl_Position = vec4(position, 1.0);",
+			"}"
+		].join('\n');
+
+		var fs = [
+			"uniform sampler2D texture;",
+			"uniform float time;",
+			"varying vec2 vUv;",
+			"void main() {",
+				"vec3 color = texture2D(texture, vUv).xyz;",
+				"gl_FragColor = vec4(color*vec3(vUv, sin(time)), 1.0);",
+			"}"
+		].join('\n');
+		var s = new THREE.ShaderMaterial({
+			uniforms: uniforms,
+			vertexShader: vs,
+			fragmentShader: fs
+		});
+
+		return {
+			shader: s,
+			uniform: uniforms,
+			update: function () {
+				uniforms.time.value = time.getElapsedTime(); 
+			}
+		}
+	}();
 
 	that.initGeo = function() {
 		uFaces = new UniqueFaces(new THREE.CubeGeometry(50, 50, 50, 3, 3, 3));
@@ -35,7 +73,8 @@ var Program = function() {
 
 		fxComp = new EffectComposer(renderer);
 		renderTarget = fxComp.getRenderTarget();
-
+		fxComp.addShaderPass(colorShader.shader, false);
+		time.start();
 	};
 
 	that.update = function() {
@@ -48,6 +87,7 @@ var Program = function() {
 		uFaces.translateFace(pFace, pFace.normal);
 
 		renderer.render(scene, camera, renderTarget);
+		colorShader.update();
 		fxComp.render();
 	};
 
