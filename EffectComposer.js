@@ -38,25 +38,25 @@ var EffectComposer = function (r, rt) {
 
 	var scene = new THREE.Scene();
 	
-	var mesh = new THREE.Mesh(new THREE.PlanarGeometry(2,2), null);
+	var mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), null);
 	scene.add(mesh);
 
-	var passVertex = """
-	varying vec2 vUv;
-	void main() {
-		vUv = uv;
-		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-	}
-	""";
+	var passVertex = [
+	"varying vec2 vUv;",
+	"void main() {",
+	"	vUv = uv;",
+	"	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+	"}"
+	].join("\n");
 
-	var blitShader = """
-	uniform sampler2D texture;
-	varying vec2 vUv;
-	void main() {
-		vec4 texel = texture2D(texture, vUv);
-		gl_FragColor = texel;
-	}
-	""";
+	var blitShader = [
+	"uniform sampler2D texture;",
+	"varying vec2 vUv;",
+	"void main() {",
+	"	vec4 texel = texture2D(texture, vUv);",
+	"	gl_FragColor = texel;",
+	"}"
+	].join("\n");
 
 	var swapBuffers = function(){
 		var tmp = readBuffer;

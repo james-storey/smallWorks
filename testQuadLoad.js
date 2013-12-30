@@ -3,6 +3,7 @@ var Program = function() {
 	var camera, scene, renderer;
 	var meshObject;
 	var uFaces;
+	var fxComp;
 
 	var that = { };
 
@@ -30,6 +31,9 @@ var Program = function() {
 		window.onresize = (this.onResize);
 
 		this.initGeo();
+
+		fxComp = new EffectComposer(renderer);
+
 	};
 
 	that.update = function() {
@@ -48,7 +52,7 @@ var Program = function() {
 		camera.aspect = window.innerWidth / window.innerHeight;
 		camera.updateProjectionMatrix();
 
-		render.setSize(window.innerWidth, window.innerHeight);
+		renderer.setSize(window.innerWidth, window.innerHeight);
 	};
 
 	return that;
