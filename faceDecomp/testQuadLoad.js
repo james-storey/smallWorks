@@ -109,48 +109,49 @@ var Program = function() {
 
 	that.update = function() {
 		requestAnimationFrame(that.update);
-		//meshObject.rotateX(0.004);
-		//meshObject.rotateY(0.003);
-		//meshObject.rotateZ(0.01);
-
-		uFaces.forEach(function(f) {
-			for(var i = 0; i < f.geo.faces.length / 16; i++) {
-				var index = Math.floor(Math.random() * f.geo.faces.length);
-				var pFace = f.faceByIndex(index);
-				if(Math.random()-0.5 > 0){
-					//f.translateFace(pFace, pFace.normal);
-					faceVelocities[index] = 0.02;
+		
+		if(theta > 0.1) {
+			uFaces.forEach(function(f) {
+				for(var i = 0; i < f.geo.faces.length / 16; i++) {
+					var index = Math.floor(Math.random() * f.geo.faces.length);
+					var pFace = f.faceByIndex(index);
+					var factor = Math.random();
+					if(Math.random()-0.5 > 0){
+						//f.translateFace(pFace, pFace.normal);
+						faceVelocities[index] = 0.04 * factor;
+					}
+					else {
+						//var reverse = new THREE.Vector3(-1*pFace.normal.x, -1*pFace.normal.y, -1*pFace.normal.z);
+						//f.translateFace(pFace, reverse);
+						faceVelocities[index] = -0.04 * factor;
+					}
 				}
-				else {
-					//var reverse = new THREE.Vector3(-1*pFace.normal.x, -1*pFace.normal.y, -1*pFace.normal.z);
-					//f.translateFace(pFace, reverse);
-					faceVelocities[index] = -0.02;
-				}
-			}
-			var vI = 0;
-			f.geo.faces.forEach(function (face) {
-				if(returnToShape === true) {
-					var cent = new THREE.Vector3(0,0,0);
-					var fverts = f.faceVerts(face);
-					cent.add(fverts.a);
-					cent.add(fverts.b);
-					cent.add(fverts.c);
-					cent.divideScalar(3);
-					cent.sub(face.centroid).multiplyScalar(-0.1);
-					f.translateFace(face, cent);
-				}
-				else if(explodeMore === true) {
-					var n = face.normal.clone();
-					n.multiplyScalar(10);
-					f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
-				}
-				else {
-					var n = face.normal.clone();
-					f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
-				}
-				vI += 1;
+				var vI = 0;
+				f.geo.faces.forEach(function (face) {
+					if(returnToShape === true) {
+						var cent = new THREE.Vector3(0,0,0);
+						var fverts = f.faceVerts(face);
+						cent.add(fverts.a);
+						cent.add(fverts.b);
+						cent.add(fverts.c);
+						cent.divideScalar(3);
+						cent.sub(face.centroid).multiplyScalar(-0.1);
+						f.translateFace(face, cent);
+					}
+					else if(explodeMore === true) {
+						var n = face.normal.clone();
+						var factor = Math.random();
+						n.multiplyScalar(10*factor);
+						f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
+					}
+					else {
+						var n = face.normal.clone();
+						f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
+					}
+					vI += 1;
+				});
 			});
-		});
+		}
 		
 
 		camera.position.x = Math.sin(theta + mouseX*0.01)*100;
