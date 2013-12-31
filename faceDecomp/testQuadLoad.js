@@ -104,7 +104,13 @@ var Program = function() {
 
 		fxComp = new EffectComposer(renderer);
 		renderTarget = fxComp.getRenderTarget();
-
+		fxComp.addShaderPass(colorShader.shader);
+		vignetteShader.uniform.offset.value = 1.0;
+		vignetteShader.uniform.offset.value = 1.0;
+		fxComp.addShaderPass(vignetteShader.shader);
+		FXAAShader.uniform.resolution.value = new THREE.Vector2(1.0/window.innerWidth, 1.0/window.innerHeight);
+		fxComp.addShaderPass(FXAAShader.shader);
+		
 	};
 
 	that.update = function() {
@@ -169,6 +175,7 @@ var Program = function() {
 		camera.updateProjectionMatrix();
 
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		FXAAShader.uniform.resolution.value = new THREE.Vector2(1.0/window.innerWidth, 1.0/window.innerHeight);
 	};
 
 	that.onMouseMove = function (event) {
