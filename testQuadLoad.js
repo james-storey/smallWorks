@@ -5,6 +5,7 @@ var Program = function() {
 	var uFaces;
 	var fxComp;
 	var renderTarget;
+	var theta = 0.0;
 
 	var that = { };
 
@@ -45,7 +46,20 @@ var Program = function() {
 		//meshObject.rotateZ(0.01);
 
 		var pFace = uFaces.faceByIndex(Math.floor(Math.random() * meshObject.geometry.faces.length));
-		uFaces.translateFace(pFace, pFace.normal);
+		if(Math.random()-0.5 > 0){
+			uFaces.translateFace(pFace, pFace.normal);
+		}
+		else {
+			var reverse = new THREE.Vector3(-1*pFace.normal.x, -1*pFace.normal.y, -1*pFace.normal.z);
+			uFaces.translateFace(pFace, reverse);
+		}
+		
+
+		camera.position.x = Math.sin(theta)*100;
+		camera.position.z = Math.cos(theta)*100;
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		theta += 0.01;
+
 
 		renderer.render(scene, camera, renderTarget);
 		fxComp.render();
