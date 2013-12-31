@@ -7,9 +7,42 @@ var Program = function() {
 	var renderTarget;
 	var theta = 0.0;
 	var faceVelocities = [];
+	var facePositions = [];
 	var mouseX, mouseY;
-	var windowHalfX = window.innerWidth/2, windowHalfY = window.innerHeight/2; 
+	var windowHalfX = window.innerWidth/2, windowHalfY = window.innerHeight/2;
+	var returnToShape = false;
+	var explodeMore = false;
 	
+	var handleKey = {
+		hold: {},
+
+		down: function(event) {
+			handleKey.hold[event.keyCode] = true;
+		},
+
+		up: function(event) {
+			handleKey.hold[event.keyCode] = false;
+		},
+
+		update: function() {
+
+			if(handleKey.hold[" ".charCodeAt(0)] === true) {
+				returnToShape = true;
+			}
+			else {
+				returnToShape = false;
+			}
+			if(handleKey.hold["Z".charCodeAt(0)] === true) {
+				explodeMore = true;
+			}
+			else {
+				explodeMore = false;
+			}
+		}
+	};
+
+	document.onkeydown = handleKey.down;
+	document.onkeyup = handleKey.up;
 
 	var that = { };
 
@@ -53,7 +86,9 @@ var Program = function() {
 					child.material.side = THREE.DoubleSide;
 					child.geometry.faces.forEach(function (face) {
 						faceVelocities.push(0.0);
+						//facePositions.push(child.localToWorld(face.centroid));
 					});
+					meshObject = child;
 				}
 			});
 			scene.add(object);
@@ -79,23 +114,40 @@ var Program = function() {
 		//meshObject.rotateZ(0.01);
 
 		uFaces.forEach(function(f) {
-			for(var i = 0; i < f.geo.faces.length / 128; i++) {
+			for(var i = 0; i < f.geo.faces.length / 16; i++) {
 				var index = Math.floor(Math.random() * f.geo.faces.length);
 				var pFace = f.faceByIndex(index);
 				if(Math.random()-0.5 > 0){
 					//f.translateFace(pFace, pFace.normal);
-					faceVelocities[index] = 0.01;
+					faceVelocities[index] = 0.02;
 				}
 				else {
 					//var reverse = new THREE.Vector3(-1*pFace.normal.x, -1*pFace.normal.y, -1*pFace.normal.z);
 					//f.translateFace(pFace, reverse);
-					faceVelocities[index] = -0.01;
+					faceVelocities[index] = -0.02;
 				}
 			}
 			var vI = 0;
 			f.geo.faces.forEach(function (face) {
-				var n = face.normal.clone();
-				f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
+				if(returnToShape === true) {
+					var cent = new THREE.Vector3(0,0,0);
+					var fverts = f.faceVerts(face);
+					cent.add(fverts.a);
+					cent.add(fverts.b);
+					cent.add(fverts.c);
+					cent.divideScalar(3);
+					cent.sub(face.centroid).multiplyScalar(-0.1);
+					f.translateFace(face, cent);
+				}
+				else if(explodeMore === true) {
+					var n = face.normal.clone();
+					n.multiplyScalar(10);
+					f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
+				}
+				else {
+					var n = face.normal.clone();
+					f.translateFace(face, (n.multiplyScalar(faceVelocities[vI])));
+				}
 				vI += 1;
 			});
 		});
@@ -105,7 +157,7 @@ var Program = function() {
 		camera.position.z = Math.cos(theta + mouseX*0.01)*100;
 		camera.lookAt(new THREE.Vector3(0, 0, 0));
 		theta += 0.001;
-
+		handleKey.update();
 
 		renderer.render(scene, camera, renderTarget);
 		fxComp.render();
@@ -122,6 +174,8 @@ var Program = function() {
 		mouseX = ( event.clientX - windowHalfX ) / 2;
 		mouseY = ( event.clientY - windowHalfY ) / 2;
 	}
+
+	
 
 	return that;
 };
