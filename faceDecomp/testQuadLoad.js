@@ -116,7 +116,7 @@ var Program = function() {
 	that.update = function() {
 		requestAnimationFrame(that.update);
 		
-		if(theta > 0.1) {
+		if(theta > 0.2) {
 			uFaces.forEach(function(f) {
 				for(var i = 0; i < f.geo.faces.length / 16; i++) {
 					var index = Math.floor(Math.random() * f.geo.faces.length);
