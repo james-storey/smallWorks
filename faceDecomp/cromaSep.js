@@ -1,4 +1,6 @@
 var colorShader = function () {
+	// @author James Storey
+	
 	var uniforms = {
 		texture: { type: "t", value: null },
 	};
