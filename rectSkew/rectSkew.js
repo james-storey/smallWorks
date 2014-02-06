@@ -9,10 +9,12 @@ var Program = function () {
 
 	var init = function() {
 		frontScene = new THREE.Scene();
+		backScene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
 		camera.position.z = 200;
 		camera.lookAt(new THREE.Vector3(0,0,0));
-		scene.add(camera);
+		frontScene.add(camera);
+		backScene.add(camera);
 
 		renderer = Detector.webgl? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
 		renderer.setClearColor(0x96A4B0, 1);
@@ -52,6 +54,9 @@ var Program = function () {
 		fxComp = new EffectComposer(renderer);
 		frontRT = fxComp.getRenderTarget();
 		backRT = fxComp.getRenderTarget();
+		var cmShader = cutMoveShader();
+
+		fxComp.addShaderPass(cmShader.shader, true);
 
 	};
 	that.init = init;
@@ -63,7 +68,8 @@ var Program = function () {
 		frontMesh.rotateZ(0.004);
 		frontMesh.rotateY(0.007);
 
-		renderer.render(frontScene, camera, renderTarget);
+		renderer.render(frontScene, camera, frontRT);
+		renderer.render(backScene, camera, backRT);
 		fxComp.render();
 	};
 	that.update = update;

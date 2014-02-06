@@ -119,7 +119,7 @@ var EffectComposer = function (r, rt) {
 		for(var j = 0; j < rawRenders.length; j += 1) {
 			renderPassThru(rawRenders[j], writeBuffer);
 			for(var i = 0; i < passes.length; i += 1) {
-				if(combineIndex > 0 && i === combineIndex) {
+				if(combineIndex >= 0 && i === combineIndex) {
 					// put the rendertargets back onto the input buffers
 					// this is for access by the combine shader
 					renderPassThru(readBuffer, rawRenders[j]);
@@ -131,7 +131,7 @@ var EffectComposer = function (r, rt) {
 		}
 
 		// render the combine step following that shader's routines
-		if(combineIndex > 0) {
+		if(combineIndex >= 0) {
 			var cShader = passes[combineIndex];
 			try {
 				cShader.uniforms.texture1.value = rawRenders[0];
