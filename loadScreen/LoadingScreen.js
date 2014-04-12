@@ -26,7 +26,7 @@ var AssetFactory = function (onFinish, onProgress) {
 		if (filesToLoad <= filesLoaded) {
 			// finish
 			if(typeof onLoad === "function") {
-				onFinish();
+				onFinish(map);
 			}
 		}
 		else
@@ -40,6 +40,10 @@ var AssetFactory = function (onFinish, onProgress) {
 		filesLoaded = 0;
 		onProgress = progressCallback;
 		onFinish = callback;
+		if(filesToLoad === 0)
+		{
+			onFinish({});
+		}
 		for (var prop in assetMap) {
 			if(typeof assetMap[prop] === "string") {
 				var uri = assetMap[prop];
@@ -80,7 +84,6 @@ var AssetFactory = function (onFinish, onProgress) {
 
 	that.loadAssets = loadAssets;
 	that.dummyLoad = dummyLoad;
-	that.map = map;
 	return that;
 };
 
@@ -88,7 +91,7 @@ var LoadingScreen = function (width, height, assetMap, callback) {
 	var factory = new AssetFactory();
 	var map = assetMap || {};
 	var that = {};
-	var loading = false;
+	var loading = true;
 	var done = false;
 
 	var barBorder = document.getElementById("barBorder");
@@ -102,12 +105,13 @@ var LoadingScreen = function (width, height, assetMap, callback) {
 	var loadingBar = document.getElementById("loadingBar");
 	loadingBar.style.height = elemHeight.toString();
 	
-	var finished = function() {
-		if (typeof callback === "function")
-			callback();
-		else
-			hideLoadingScreen();
+	var finished = function(map) {
+		done = true;
 		loading = false;
+		if (typeof callback === "function") {
+			callback(map);
+		}
+		hideLoadingScreen();
 	};
 
 	var progress = function(loaded, total) {
@@ -119,8 +123,7 @@ var LoadingScreen = function (width, height, assetMap, callback) {
 	// call from the main program's render loop
 	// first call starts the load requests
 	var animate = function() {
-		if(loading === false) {
-			loading = true;
+		if(loading === true) {
 			if(typeof assetMap !== "object") {
 				//factory.loadAssets(assetMap, finished, progress);
 				factory.dummyLoad(finished, progress);
