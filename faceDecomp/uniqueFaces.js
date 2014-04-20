@@ -67,7 +67,7 @@ UniqueFaces.prototype = {
 		return { a: this.geo.vertices[face.a],
 				 b: this.geo.vertices[face.b],
 				 c: this.geo.vertices[face.c] };
-	}
+	},
 
 	faceByIndex: function(index) {
 		if(index >= this.geo.faces.length){
