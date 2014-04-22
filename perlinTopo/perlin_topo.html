@@ -198,12 +198,24 @@
 			void main(){
 				float twopi = 6.28318530718;
 				vec3 pos = vec3(vUv, time);
-				float noise = tan(snoise(pos)*(twopi*15.0));
+				float fnoise = (snoise(vec3(pos.xy*1.0, time)))+
+							   (snoise(vec3(pos.xy*2.0, time))*0.5)+
+							   (snoise(vec3(pos.xy*4.0, time))*0.25)+
+							   (snoise(vec3(pos.xy*8.0, time))*0.125)+
+							   (snoise(vec3(pos.xy*16.0, time))*0.0625)+
+							   (snoise(vec3(pos.xy*32.0, time))*0.03125)+
+							   (snoise(vec3(pos.xy*64.0, time))*0.015625)+
+							   (snoise(vec3(pos.xy*128.0, time))*0.0078125);
+				float noise = tan(fnoise*(twopi*2.0));
 				if(abs(noise) <  0.0 || abs(noise) > 0.04){
-					//noise = floor(abs(noise));
-					noise = 1.0;
+					noise = (fnoise*0.25)+0.75;
 				}
 				gl_FragColor = vec4(noise, noise, noise, 1.0);
+				/*float value = 0.0;
+				if(fnoise > 0.5){
+					value = 1.0;
+				}
+				gl_FragColor = vec4(value, value, value, 1.0);*/
 			}
 
 		</script>
