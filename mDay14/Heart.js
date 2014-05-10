@@ -7,7 +7,7 @@ var Heart = function(){
     	var loader = new THREE.JSONLoader();
 
     	loader.load("./mdheart.js", function(geometry){
-		 	var material = new THREE.MeshLambertMaterial( {color: 0xDD4D98} );
+		 	var material = new THREE.MeshLambertMaterial( {color: 0xDD4D98, wireframe:true} );
 		 	heartMesh = new THREE.Mesh(geometry, material);
 		 	that.loaded = true;
 		 	console.log("heart loaded");
