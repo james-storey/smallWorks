@@ -43,7 +43,7 @@ var Program = function () {
 		time = now;
 		timer += dt;
 
-
+		TWEEN.update();
 		heart.update(dt);
 		ocean.update(dt);
 		render();

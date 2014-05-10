@@ -2,6 +2,10 @@ var Heart = function(){
 	var that = {};
 	that.loaded = false;
     var heartMesh;
+    t = 0;
+
+   	var pos = {y:-150};
+    var tween;
 
     var load = function () {
     	var loader = new THREE.JSONLoader();
@@ -17,11 +21,22 @@ var Heart = function(){
 
     var update = function (dt) {
     	if (that.loaded === true) {
-    		heartMesh.position = new THREE.Vector3( 0, 0, 200 );
+    		if (t === 0)
+    		{
+    			tween = new TWEEN.Tween(pos).to({y:10}, 4000);
+    			tween.onUpdate(function () {
+    				heartMesh.position = new THREE.Vector3( 0, pos.y, 200 );
+    			});
+    			tween.easing(TWEEN.Easing.Quadratic.InOut);
+    			tween.start();
+    		}
+    		t += dt * 0.0016;
     		heartMesh.scale.set(50, 50, 50)
     		heartMesh.rotateY(0.0016*dt);
     	}
     };
+
+    
 
     that.load = load;
     that.update = update;
