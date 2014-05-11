@@ -74,11 +74,11 @@ var Program = function () {
 		var confettigeo = new THREE.PlaneGeometry( 1, 3, 2, 2 );
 		var mats = new Array();
 		var confettib = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide,
-														color: 0x0000ff} );
+														color: 0xDD4D98} );
 		var confettig = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide,
-														color: 0x00ff00} );
+														color: 0x22dd55} );
 		var confettir = new THREE.MeshBasicMaterial( {side: THREE.DoubleSide,
-														color: 0xff0000} );
+														color: 0xdd5522} );
 		mats[0] = confettib;
 		mats[1] = confettig;
 		mats[2] = confettir;
