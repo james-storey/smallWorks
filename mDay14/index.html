@@ -2,6 +2,7 @@
 	<head>
 		<title>Mother's Day</title>
 		<style> 
+			@import "webfonts/uni0553.css";
 			canvas 
 			{ 
 				width: 100%; 
@@ -13,14 +14,30 @@
 			{
 				margin: 0;
 				padding: 0;
-				background-color: #0f0f0f; 
+				background-color: #0f0f0f;
+				font-family: 'uni_05_53', sans-serif;
+				color: #FFFFFF;
+			}
+			span
+			{
+
+				position: absolute;
+				bottom: 0px;
+				width: 100%;
+				text-align: center;
+				z-index: 99;
+			}
+			a
+			{
+				text-decoration: none;
+				color: #FFFFFF;
 			}
 		</style>
 	</head>
 	<body>
-		<script src="../../three.js/build/three.js"></script>
-		<script src="../../cannon.js/build/cannon.js"></script>
-		<script src="../../tween.js/build/tween.min.js"></script>
+		<span> By <a href="http://storey.sysreturn.net" target="_blank">James</a> and <a href="http://art-tech.arts.ufl.edu/~tstorey" target="_blank">Thomas</a></span>
+		<script src="../three.min.js"></script>
+		<script src="../tween.min.js"></script>
 		<script src="SimplexNoise.js"></script>
 		<script src="globals.js"></script>
 		<script src="Ocean.js"></script>

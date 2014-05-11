@@ -12,7 +12,7 @@ self.onmessage = function(e){
       	var velocities = e.data.velocities;
       	var eulers = e.data.eulers;
       	if(!running){
-      		importScripts('SimplexNoise.js', '../../three.js/build/three.js');
+      		importScripts('SimplexNoise.js', '../three.min.js');
       		simplex = new SimplexNoise();
       		running = true;
       		gravity = new THREE.Vector3( 0.0, -0.3, 0.0 );

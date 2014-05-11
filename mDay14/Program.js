@@ -88,7 +88,7 @@ var Program = function () {
 			scene.add(confetti);
 		}
 
-		that.sendDataToWorker();
+		//that.sendDataToWorker();
 
 		var aL = new THREE.AmbientLight( 0x222222 );
 		var dL = new THREE.DirectionalLight({color: 0xF9DFAE});

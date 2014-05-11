@@ -68,7 +68,6 @@ var Heart = function(){
 		 	heartMesh = new THREE.Mesh(geometry, material);
 		 	that.heartLoaded = true;
 		 	console.log("heart loaded");
-		 	scene.add(heartMesh);
 
             loader.load("./mdText.js", function(geometry) {
                 var material = new THREE.MeshLambertMaterial( {color: 0xf384c6});
@@ -77,14 +76,14 @@ var Heart = function(){
                 console.log("text Loaded");
                 textMesh.scale.set(0.4, 0.4, 0.4);
                 textMesh.position.setZ(1);
-                heartMesh.add(textMesh);
+                program.sendDataToWorker();
             });
             sortVertsY();
 	 	});
     };
 
     var update = function (dt) {
-    	if (that.heartLoaded === true) {
+    	if (that.textLoaded === true) {
     		if (t === 0)
     		{
     			tween = new TWEEN.Tween(pos).to({y:10}, 5000);
@@ -110,6 +109,9 @@ var Heart = function(){
                 });
     			tween.easing(TWEEN.Easing.Quadratic.InOut);
     			tween.start();
+                scene.add(heartMesh);
+                heartMesh.add(textMesh);
+                heartMesh.position.setY(-1000);
     		}
     		t += dt * 0.0016;
     		heartMesh.scale.set(50, 50, 50);
@@ -118,10 +120,6 @@ var Heart = function(){
             heartMesh.position.setX(hPos.x + (Math.sin(t * 0.8 + Math.PI*0.3) * 2.5));
             heartMesh.setRotationFromEuler(new THREE.Euler( Math.sin(t) * 0.1, Math.sin(t * 0.7) * 0.1, 0 ));
     	}
-
-        if (that.textLoaded === true) {
-            
-        }
     };
 
     
