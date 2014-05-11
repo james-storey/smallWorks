@@ -3,9 +3,11 @@ var Heart = function(){
 	that.loaded = false;
     var heartMesh;
     var ySort = [];
+    var ogVerts = [];
     var t = 0;
 
-   	var pos = {y:-150};
+    var startY = -150;
+   	var pos = {y:startY};
     var tween;
 
     var insertVByY = function (a, v, i)
@@ -50,6 +52,7 @@ var Heart = function(){
             var v = heartMesh.geometry.vertices[i];
             var r = insertVByY(ySort, v, i);
             ySort = r;
+            ogVerts.push(new THREE.Vector3(v.x, v.y, v.z));
         }
     };
 
@@ -57,7 +60,7 @@ var Heart = function(){
     	var loader = new THREE.JSONLoader();
 
     	loader.load("./mdheart.js", function(geometry){
-		 	var material = new THREE.MeshLambertMaterial( {color: 0xDD4D98, wireframe:true} );
+		 	var material = new THREE.MeshLambertMaterial( {color: 0xDD4D98, wireframe:false} );
 		 	heartMesh = new THREE.Mesh(geometry, material);
 		 	that.loaded = true;
 		 	console.log("heart loaded");
@@ -73,16 +76,28 @@ var Heart = function(){
     	if (that.loaded === true) {
     		if (t === 0)
     		{
-    			tween = new TWEEN.Tween(pos).to({y:10}, 4000);
+    			tween = new TWEEN.Tween(pos).to({y:10}, 5000);
     			tween.onUpdate(function () {
     				heartMesh.position = new THREE.Vector3( 0, pos.y, 200 );
+                    
     			});
     			tween.easing(TWEEN.Easing.Quadratic.InOut);
     			tween.start();
     		}
     		t += dt * 0.0016;
-    		heartMesh.scale.set(50, 50, 50)
-    		heartMesh.rotateY(0.0016*dt);
+    		heartMesh.scale.set(50, 50, 50);
+
+            for(var i = 0; i < ySort.length; i += 1) {
+                var tWt = (1 - ((pos.y + 150)/160)) * Math.PI * 2 *
+                (5 * (ySort.length - i)/ySort.length);
+                heartMesh.geometry.vertices[ySort[i]].setX( 
+                    ogVerts[ySort[i]].x * Math.cos(tWt) - 
+                    ogVerts[ySort[i]].z * Math.sin(tWt));
+                heartMesh.geometry.vertices[ySort[i]].setZ( 
+                    ogVerts[ySort[i]].x * Math.sin(tWt) +
+                    ogVerts[ySort[i]].z * Math.cos(tWt));
+            }
+            heartMesh.geometry.verticesNeedUpdate = true;
     	}
     };
 
