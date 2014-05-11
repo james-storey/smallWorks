@@ -16,7 +16,7 @@ var Program = function () {
 		scene.add(camera);
 
 		renderer = new THREE.WebGLRenderer();
-		renderer.setClearColor(0xF3BE5A, 1);
+		renderer.setClearColor(0x72D6AD, 1);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 
 		var viewport = renderer.domElement;
@@ -31,9 +31,12 @@ var Program = function () {
 
 		var aL = new THREE.AmbientLight( 0x202020 );
 		var dL = new THREE.DirectionalLight({color: 0xF9DFAE});
-		dL.position = new THREE.Vector3( 1, 1.5, 1 );
+		dL.position = new THREE.Vector3( 1, 1.5, 1.5 );
+		var dL2 = new THREE.DirectionalLight(0xF9DFAE, 0.8);
+		dL2.position = new THREE.Vector3( -1, -1.5, 0.1 );
 		scene.add(aL);
 		scene.add(dL);
+		scene.add(dL2);
 	};
 
 	var update = function () {
