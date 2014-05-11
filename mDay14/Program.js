@@ -131,5 +131,10 @@ var Program = function () {
 };
 
 var program = Program();
-program.init();
-program.update();
+if(! Detector.webgl) {
+	document.body.appendChild(Detector.getWebGLErrorMessage());
+}
+else {
+	program.init();
+	program.update();
+}
